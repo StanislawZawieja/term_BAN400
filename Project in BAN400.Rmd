@@ -8,6 +8,9 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+#add docstring
+#use map functions if possible
+
 # Uploading packages that we are going to use (add more if necessary)
 library(readxl)           #reading an excel file
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
@@ -52,15 +55,17 @@ anim_save(filename="animation.gif", mygif)
 
 ```
 
-```{r}
+```{r string output - return current exchange rate}
 
 ```
 
-```{r}
-
+```{r report - inform the user on data quality }
+#if the data is current or if the data is not current
+#how volatile is the data?
+#ask Big Hawk what we're supposed to test???
 ```
 
-```{r}
-
+```{r shiny application }
+#include input and output boxes and report on data quality
 ```
 
