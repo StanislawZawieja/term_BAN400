@@ -10,16 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Uploading packages that we are going to use (add more if necessary)
 library(readxl)           #reading an excel file
-library(stargazer)        #for making a gif
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
-```
-comment without hashtag, kult
-```{r}
-
-```
-
-```{r}
-
 ```
 
 ```{r Getting the users input}
@@ -28,7 +19,7 @@ library(quantmod)
 currency <- readline(prompt = "Which currencies do you want to compare?: ")
 # Example: NOK/EUR
 
-getFX(currency,
+output <- getFX(currency,
      from = "2020-09-01", to = Sys.Date(),
      env = .GlobalEnv,
      verbose = FALSE,
@@ -37,7 +28,26 @@ getFX(currency,
 
 ```
 
-```{r Make a graph}
+```{r Make a graph and GIF}
+library(gganimate)
+library(gifski)
+
+# Need to look closer how to make the output as a data frame so we can use it
+# in the ggplot function and gif
+plot <- output%>%
+  ggplot(aes(x=EUR, y =NOK))+
+  geom_line()+
+  ylab("Stock price (NOK)")+
+  xlab("Observations")+
+  labs(title = "Stockprices of MOWI from 2017-2020")+
+  geom_point()+
+  geom_line()+
+  theme_classic()+
+  transition_reveal(date)
+
+mygif <- animate(PLOT2, width=1600, height=800, renderer=gifski_renderer(loop=TRUE))  
+
+anim_save(filename="animation.gif", mygif)
 
 
 ```
