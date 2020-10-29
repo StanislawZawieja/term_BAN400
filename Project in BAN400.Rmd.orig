@@ -1,0 +1,44 @@
+---
+title: "Project in BAN400"
+author: "Nina, Stan and Imran (Group 99 )"
+date: "29 10 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Uploading packages that we are going to use (add more if necessary)
+library(dplyr)
+library(foreign)
+library(ggplot2)
+library(lubridate)
+library(magrittr)
+library(readr)
+library(readxl)
+library(tidyr)
+library(microbenchmark)
+library(stargazer)
+library(tidyverse)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+<<<<<<< HEAD
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+
+```
+
+=======
+>>>>>>> ce79a2e950b109cbf77b5546c3dc654cafdeec57
