@@ -22,6 +22,26 @@ library(stargazer)
 library(tidyverse)
 ```
 
+```{r Getting the users input}
+library(quantmod)
+
+currency <- readline(prompt = "Which currencies do you want to compare?: ")
+# Example: NOK/EUR
+
+getFX(currency,
+     from = "2020-09-01", to = Sys.Date(),
+     env = .GlobalEnv,
+     verbose = FALSE,
+     warning = TRUE,
+     auto.assign = TRUE)
+
+```
+
+```{r Make a graph}
+
+
+```
+
 ```{r}
 
 ```
