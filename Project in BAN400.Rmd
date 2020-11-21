@@ -47,24 +47,37 @@ output <- getFX(currency,
 ```
 
 ```{r Make a graph and GIF}
+
+# import the priceR package
+library(priceR)
+
+# make the output
+output <- historical_exchange_rates("EUR", to = "NOK",
+                          start_date = "2018-01-01", end_date = "2020-11-21")
+
+# libraries needed to create GIF
+library(ggplot2)
+library(tidyverse)
 library(gganimate)
 library(gifski)
 
-# Need to look closer how to make the output as a data frame so we can use it
-# in the ggplot function and gif
-plot <- output%>%
-  ggplot(aes(x=EUR, y =NOK))+
-  geom_line()+
-  ylab("Stock price (NOK)")+
-  xlab("Observations")+
-  labs(title = "Stockprices of MOWI from 2017-2020")+
-  geom_point()+
-  geom_line()+
+# making the plot
+plot <- output %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
+  geom_line() +
+  geom_smooth(method = 'loess')+
+  ylab("Price of one EUR in NOK")+
+  xlab("Date")+
+  labs(title = "Exchange rates between EUR and NOK")+
   theme_classic()+
   transition_reveal(date)
 
-mygif <- animate(PLOT2, width=1600, height=800, renderer=gifski_renderer(loop=TRUE))  
 
+# producing the GIF
+mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))  
+
+# saving the GIF
 anim_save(filename="animation.gif", mygif)
 
 
