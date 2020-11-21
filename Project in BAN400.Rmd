@@ -19,11 +19,26 @@ library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
 ```{r Getting the users input}
 library(quantmod)
 
-currency <- readline(prompt = "Which currencies do you want to compare?: ")
-# Example: NOK/EUR
+# tests: data quality for currencies, proper format for dates, if newest data is not from today, inform the user that data is eg. from yesterday (report)
 
+#get user input
+currency1 <- readline(prompt = cat("What is the first currency?"))
+currency2 <- readline(prompt = cat("What is the second currency?"))
+startdate <- readline(prompt = cat("What is the start date?"))
+finishdate <- readline(prompt = cat("What is the finish date date?"))
+
+currency <- gsub(" ", "", paste(currency1,"/",currency2, sep = ""), fixed = TRUE)
+
+startdate <- "2017-09-01"
+finishdate <- "today"
+if (finishdate == "today"){
+  finishdate <- Sys.Date()
+}
+
+#use pricer package instead of quantmod?
+#https://stackoverflow.com/questions/26694042/how-to-get-currency-exchange-rates-in-r
 output <- getFX(currency,
-     from = "2020-09-01", to = Sys.Date(),
+     from = startdate, to = finishdate,
      env = .GlobalEnv,
      verbose = FALSE,
      warning = TRUE,
@@ -56,7 +71,7 @@ anim_save(filename="animation.gif", mygif)
 ```
 
 ```{r string output - return current exchange rate}
-
+#numerical output for today
 ```
 
 ```{r report - inform the user on data quality }
