@@ -84,6 +84,7 @@ anim_save(filename="animation.gif", mygif)
 ```
 
 ```{r string output - return current exchange rate}
+# nothing to do here - doing it in the shiny chunk
 #numerical output for today
 ```
 
@@ -98,7 +99,41 @@ anim_save(filename="animation.gif", mygif)
 library(shiny) # shiny package required to build the app
 
 #user interface part of the app - the website that the user uses
-ui <- fluidPage("Hello World")
+
+ui <- fluidPage(
+  
+  #input functions
+textInput(inputId = "currency1", 
+          label = "What is the first currency?",
+          value = "",
+          width = "70px",
+          placeholder = "EUR"
+          ),
+
+textInput(inputId = "currency2", 
+          label = "What is the second currency?",
+          value = "",
+          width = "70px",
+          placeholder = "NOK"
+          ),
+
+dateRangeInput(inputId = "dates",
+               label = "What time period do you want to look at?",
+               start = "2000-01-01",
+               max = Sys.Date(),
+               format = "dd-mm-yyyy",
+               startview = "decade",
+               weekstart = "1"
+               ),
+  
+  #output functions
+textOutput(outputId = "text_rate"),
+
+textOutput(outputId = "text_report"),
+
+plotOutput(outputId = "plot")
+
+  )
 
 #server instructions part of the app
 server <- function(input, output) {}
