@@ -138,7 +138,22 @@ plotOutput(outputId = "plot")
   )
 
 #server instructions part of the app
-server <- function(input, output) {}
+server <- function(input, output) {
+  
+  #the code that generates each output goes inside the render() function
+  #render functions create outputs
+  
+  output$text_rate <- renderText("your exchange rate is sth")
+  
+  output$text_report <- renderText(print("the user report is whatever"))
+  
+  #all the code to make a plot goes between the braces and is passed on to the renderPlot() function.
+  output$plot <- renderPlot({
+    title <- "this is a dummy graph"
+    hist(rnorm(100), main = title)
+    })
+
+}
 
 #create the shiny app from the UI and the server parts
 shinyApp(ui = ui, server = server)
