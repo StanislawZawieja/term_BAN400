@@ -83,17 +83,6 @@ anim_save(filename="animation.gif", mygif)
 
 ```
 
-```{r string output - return current exchange rate}
-# nothing to do here - doing it in the shiny chunk
-#numerical output for today
-```
-
-```{r report - inform the user on data quality }
-#if the data is current or if the data is not current
-#how volatile is the data?
-#ask Big Hawk what we're supposed to test???
-```
-
 ```{r shiny application }
 #include input and output boxes and report on data quality
 library(shiny) # shiny package required to build the app
@@ -146,6 +135,9 @@ server <- function(input, output) {
   output$text_rate <- renderText("your exchange rate is sth")
   
   output$text_report <- renderText(print("the user report is whatever"))
+  #if the data is current or if the data is not current
+#how volatile is the data?
+#ask Big Hawk what we're supposed to test???
   
   #all the code to make a plot goes between the braces and is passed on to the renderPlot() function.
   output$plot <- renderPlot({
