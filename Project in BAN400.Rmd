@@ -83,7 +83,7 @@ anim_save(filename="animation.gif", mygif)
 
 ```
 
-```{r shiny application }
+```{ui shiny}
 #include input and output boxes and report on data quality
 library(shiny) # shiny package required to build the app
 
@@ -126,6 +126,10 @@ plotOutput(outputId = "plot")
 
   )
 
+
+```
+
+```{server shiny}
 #server instructions part of the app
 server <- function(input, output) {
   
@@ -147,9 +151,11 @@ server <- function(input, output) {
 
 }
 
+```
+
+
+```{shiny App}
 #create the shiny app from the UI and the server parts
 shinyApp(ui = ui, server = server)
-
-
 ```
 
