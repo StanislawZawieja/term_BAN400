@@ -16,36 +16,6 @@ library(readxl)           #reading an excel file
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
 ```
 
-```{r Getting the users input}
-library(quantmod)
-
-# tests: data quality for currencies, proper format for dates, if newest data is not from today, inform the user that data is eg. from yesterday (report)
-
-#get user input
-currency1 <- readline(prompt = cat("What is the first currency?"))
-currency2 <- readline(prompt = cat("What is the second currency?"))
-startdate <- readline(prompt = cat("What is the start date?"))
-finishdate <- readline(prompt = cat("What is the finish date date?"))
-
-currency <- gsub(" ", "", paste(currency1,"/",currency2, sep = ""), fixed = TRUE)
-
-startdate <- "2017-09-01"
-finishdate <- "today"
-if (finishdate == "today"){
-  finishdate <- Sys.Date()
-}
-
-#use pricer package instead of quantmod?
-#https://stackoverflow.com/questions/26694042/how-to-get-currency-exchange-rates-in-r
-output <- getFX(currency,
-     from = startdate, to = finishdate,
-     env = .GlobalEnv,
-     verbose = FALSE,
-     warning = TRUE,
-     auto.assign = TRUE)
-
-```
-
 ```{r Make a graph and GIF}
 
 # import the priceR package
