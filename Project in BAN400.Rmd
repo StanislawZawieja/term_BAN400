@@ -62,10 +62,8 @@ library(shiny) # shiny package required to build the app
 
 x <- currencies()
 
-#include input and output boxes and report on data quality
-
-#user interface part of the app - the website that the user uses
-user_input <- fluidPage(
+user_input <- function(){
+  fluidPage(
   #' User interface of the exchange rate converter
   #' 
   #' @description Makes a user choose which two currencies they want to
@@ -106,7 +104,9 @@ user_input <- fluidPage(
                           textOutput(outputId = "text_report"),
                           plotOutput(outputId = "plot"))) 
 )
+}
 
+?user_input #documentation of the function
 
 ```
 
