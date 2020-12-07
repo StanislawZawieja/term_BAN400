@@ -15,58 +15,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readxl)           #reading an excel file
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
 library(docstring)
-library(priceR)
-library(shiny)
-```
-
-```{r Make a graph and GIF}
-
-# import the priceR package
-library(priceR)
-
-# make the output
-output <- historical_exchange_rates("EUR", to = "NOK",
-                          start_date = "2018-01-01", end_date = "2020-11-21")
-
-# libraries needed to create GIF
+library(priceR)# import the priceR package
+library(shiny) # shiny package required to build the app
 library(ggplot2)
-library(tidyverse)
 library(gganimate)
-library(gifski)
-
-# making the plot
-plot <- output %>% 
-  mutate(date = as.Date(date)) %>% 
-  ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
-  geom_line() +
-  geom_smooth(method = 'loess')+
-  ylab("Price of one EUR in NOK")+
-  xlab("Date")+
-  labs(title = "Exchange rates between EUR and NOK")+
-  theme_classic()+
-  transition_reveal(date)
-
-
-# producing the GIF
-mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))  
-
-# saving the GIF
-anim_save(filename="animation.gif", mygif)
-
-
 ```
 
 ```{ui shiny}
 
-library(gapminder)
-library(ggplot2)
-library(shiny)
-library(gganimate)
 theme_set(theme_bw())
-
-
-#include input and output boxes and report on data quality
-library(shiny) # shiny package required to build the app
 
 x <- currencies()
 
@@ -141,14 +98,24 @@ output$plot1 <- renderImage({
     outfile <- tempfile(fileext='.gif')
 
     # making the animation
-    GIF <- ggplot(gapminder, aes("currency1" , "currency2", size = pop, 
-      color = continent)) + geom_line() + transition_time(Day)
+    
+    df <- historical_exchange_rates(from = "EUR", to = "NOK", # from and to must be change to something like inputId1, the same goes for selected dates
+                          start_date = "2018-01-01", end_date = "2020-11-21")
+    
+    GIF = ggplot(df, aes(x = as.Date(date), y = one_EUR_equivalent_to_x_NOK,
+                          group = 1))+
+           geom_line() +
+           ylab("Price of one EUR in NOK") +
+           xlab("Date") +
+           labs(title = "Exchange rates between EUR and NOK") +
+           theme_classic() +
+           transition_reveal(date)
 
-    anim_save("outfile.gif", animate(GIF))
+    anim_save("outfile.gif", animate(GIF, renderer=gifski_renderer(loop=FALSE)))
 
     # returning a list containing the filename
      list(src = "outfile.gif",
-         contentType = 'image/gif'
+         contentType = 'image/gif',
           width = 400,
           height = 300,
           alt = "This is alternate text"
@@ -157,7 +124,6 @@ output$plot1 <- renderImage({
 }
 
 ```
-
 
 ```{shiny App}
 #create the shiny app from the UI and the server parts
