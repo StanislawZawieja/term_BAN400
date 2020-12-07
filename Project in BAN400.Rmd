@@ -62,7 +62,7 @@ library(shiny) # shiny package required to build the app
 
 x <- currencies()
 
-user_input <- function(){
+ui <- function(){
   fluidPage(
   #' User interface of the exchange rate converter
   #' 
@@ -106,7 +106,7 @@ user_input <- function(){
 )
 }
 
-?user_input #documentation of the function
+?ui #documentation of the function
 
 ```
 
