@@ -92,8 +92,8 @@ ui <- function(){
                  
                  dateRangeInput(inputId = "dates",
                                 label = "What time period do you want to look at?",
-                                start = "2000-01-01",
-                                end = NULL,
+                                start = "2020-12-01",
+                                end = Sys.Date(),
                                 min = "2000-01-01",
                                 max = Sys.Date(),
                                 format = "dd-mm-yyyy",
@@ -133,8 +133,24 @@ server <- function(input, output) {
   
   #all the code to make a plot goes between the braces and is passed on to the renderPlot() function.
   output$plot <- renderPlot({
-    title <- "this is a dummy graph"
-    hist(rnorm(100), main = title)
+     table <- historical_exchange_rates(input$currency1, to = input$currency2, start_date = input$dates[1], end_date = input$dates[2])
+    title <- paste("the historical exchange rate of",
+                   input$currency1,
+                   "/",
+                   input$currency2)
+    print(head(table))
+    # table %>% 
+    #   head() %>% 
+    #   mutate(date = as.Date(date)) %>%
+    #   ggplot(aes(x = date, y = table[,2], group = 1)) +
+    #   geom_line() +
+    #   geom_smooth(method = 'loess')+
+    #   ylab("Price of one EUR in NOK")+
+    #   xlab("Date")+
+    #   labs(title = "Exchange rates between EUR and NOK")+
+    #   theme_classic()
+    #   transition_reveal(date)
+    plot(head(table[, 2]) , main = title)
     })
 
 }
