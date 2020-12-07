@@ -57,6 +57,14 @@ anim_save(filename="animation.gif", mygif)
 ```
 
 ```{ui shiny}
+
+library(gapminder)
+library(ggplot2)
+library(shiny)
+library(gganimate)
+theme_set(theme_bw())
+
+
 #include input and output boxes and report on data quality
 library(shiny) # shiny package required to build the app
 
