@@ -107,10 +107,10 @@ ui <- function(){
                                 startview = "decade",
                                 weekstart = "1")),
                 
-                mainPanel(#img(src = "something.png", height = 140, width = 400), #for the gif or something
+                mainPanel(
                           textOutput(outputId = "text_rate"),
                           textOutput(outputId = "text_report"),
-                          plotOutput(outputId = "plot"))) 
+                          imageOutput("plot1"))) 
 )
 }
 
@@ -132,11 +132,27 @@ server <- function(input, output) {
 #how volatile is the data?
 #ask Big Hawk what we're supposed to test???
   
-  #all the code to make a plot goes between the braces and is passed on to the renderPlot() function.
-  output$plot <- renderPlot({
-    title <- "this is a dummy graph"
-    hist(rnorm(100), main = title)
-    })
+
+# Making the GIF by renderImage()
+  
+output$plot1 <- renderImage({
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outfile <- tempfile(fileext='.gif')
+
+    # making the animation
+    GIF <- ggplot(gapminder, aes("currency1" , "currency2", size = pop, 
+      color = continent)) + geom_line() + transition_time(Day)
+
+    anim_save("outfile.gif", animate(GIF))
+
+    # returning a list containing the filename
+     list(src = "outfile.gif",
+         contentType = 'image/gif'
+          width = 400,
+          height = 300,
+          alt = "This is alternate text"
+         )}, deleteFile = TRUE)
 
 }
 
@@ -145,6 +161,6 @@ server <- function(input, output) {
 
 ```{shiny App}
 #create the shiny app from the UI and the server parts
-shinyApp(ui = ui, server = server)
+shinyApp(ui, server)
 ```
 
