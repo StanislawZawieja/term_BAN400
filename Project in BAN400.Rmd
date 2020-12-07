@@ -14,6 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 # Uploading packages that we are going to use (add more if necessary)
 library(readxl)           #reading an excel file
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
+library(docstring)
+library(priceR)
+library(shiny)
 ```
 
 ```{r Make a graph and GIF}
@@ -57,44 +60,52 @@ anim_save(filename="animation.gif", mygif)
 #include input and output boxes and report on data quality
 library(shiny) # shiny package required to build the app
 
+x <- currencies()
+
+#include input and output boxes and report on data quality
+
 #user interface part of the app - the website that the user uses
-
-ui <- fluidPage(
+user_input <- fluidPage(
+  #' User interface of the exchange rate converter
+  #' 
+  #' @description Makes a user choose which two currencies they want to
+  #' compare within a chosen time period
+  #' 
+  #'  @usage .. 
+  headerPanel("Silicon valley exchange rate converter"),
   
-  #input functions
-textInput(inputId = "currency1", 
-          label = "What is the first currency?",
-          value = "",
-          width = "70px",
-          placeholder = "EUR"
-          ),
-
-textInput(inputId = "currency2", 
-          label = "What is the second currency?",
-          value = "",
-          width = "70px",
-          placeholder = "NOK"
-          ),
-
-dateRangeInput(inputId = "dates",
-               label = "What time period do you want to look at?",
-               start = "2000-01-01",
-               end = NULL,
-               min = "2000-01-01",
-               max = Sys.Date(),
-               format = "dd-mm-yyyy",
-               startview = "decade",
-               weekstart = "1"
-               ),
-  
-  #output functions
-textOutput(outputId = "text_rate"),
-
-textOutput(outputId = "text_report"),
-
-plotOutput(outputId = "plot")
-
-  )
+  sidebarLayout(
+    sidebarPanel(selectInput(inputId = "currency1",
+                             label = "What is the first currency?",
+                             choices = x$description,
+                             multiple = FALSE,
+                             selectize = TRUE,
+                             width = NULL,
+                             size = NULL),
+                 
+                 selectInput(inputId = "currency2", 
+                             label = "What is the second currency?",
+                             choices = x$description,
+                             multiple = FALSE,
+                             selectize = TRUE,
+                             width = NULL,
+                             size = NULL),
+                 
+                 dateRangeInput(inputId = "dates",
+                                label = "What time period do you want to look at?",
+                                start = "2000-01-01",
+                                end = NULL,
+                                min = "2000-01-01",
+                                max = Sys.Date(),
+                                format = "dd-mm-yyyy",
+                                startview = "decade",
+                                weekstart = "1")),
+                
+                mainPanel(#img(src = "something.png", height = 140, width = 400), #for the gif or something
+                          textOutput(outputId = "text_rate"),
+                          textOutput(outputId = "text_report"),
+                          plotOutput(outputId = "plot"))) 
+)
 
 
 ```
