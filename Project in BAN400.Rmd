@@ -122,7 +122,7 @@ server <- function(input, output) {
     
     fx_rate <- historical_exchange_rates(input$currency1, to = input$currency2, start_date = Sys.Date(), end_date = Sys.Date())
     
-    paste("1", input$currency1, "equals", fx_rate[2], input$currency2)
+    paste("Currently, 1", input$currency1, "equals", fx_rate[2], input$currency2)
     
     })
   
@@ -151,7 +151,6 @@ server <- function(input, output) {
       labs(title = graph_title)+
       theme_classic()
       #transition_reveal(date)
-    #plot(head(table[, 2]) , main = title)
     })
 
 }
