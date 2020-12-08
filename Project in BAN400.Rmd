@@ -33,7 +33,6 @@ output <- historical_exchange_rates("EUR", to = "NOK",
 
 ```{ui shiny}
 #include input and output boxes and report on data quality
-library(shiny) # shiny package required to build the app
 
 x <- currencies()
 
@@ -59,15 +58,16 @@ ui <- function(){
   sidebarLayout(
     sidebarPanel(selectInput(inputId = "currency1",
                              label = "What is the first currency?",
-                             choices = df$currencies,
-                             multiple = FALSE,
+                             choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$code, value = T),
+                                            "All currencies" = x$code),
                              selectize = TRUE,
                              width = NULL,
                              size = NULL),
   #'               
                  selectInput(inputId = "currency2", 
                              label = "What is the second currency?",
-                             choices = df$currencies,
+                             choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$code, value = T),
+                                            "All currencies" = x$code),
                              multiple = FALSE,
                              selectize = TRUE,
                              width = NULL,
@@ -82,7 +82,6 @@ ui <- function(){
                                 format = "dd-mm-yyyy",
                                 startview = "decade",
                                 weekstart = "1")),
-  
   #'          
                 mainPanel(#img(src = "something.png", height = 140, width = 400), #for the gif or something
                           textOutput(outputId = "text_rate"),
@@ -90,8 +89,6 @@ ui <- function(){
                           plotOutput(outputId = "plot"))) 
 )
 }
-
-?ui #documentation of the function
 
 ```
 
