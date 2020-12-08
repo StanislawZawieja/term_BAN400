@@ -28,30 +28,31 @@ library(priceR)
 output <- historical_exchange_rates("EUR", to = "NOK",
                           start_date = "2018-01-01", end_date = "2020-11-21")
 
-# libraries needed to create GIF
-library(ggplot2)
-library(tidyverse)
-library(gganimate)
-library(gifski)
 
-# making the plot
-plot <- output %>% 
-  mutate(date = as.Date(date)) %>% 
-  ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
-  geom_line() +
-  geom_smooth(method = 'loess')+
-  ylab("Price of one EUR in NOK")+
-  xlab("Date")+
-  labs(title = "Exchange rates between EUR and NOK")+
-  theme_classic()+
-  transition_reveal(date)
-
-
-# producing the GIF
-mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))  
-
-# saving the GIF
-anim_save(filename="animation.gif", mygif)
+# # libraries needed to create GIF
+# library(ggplot2)
+# library(tidyverse)
+# library(gganimate)
+# library(gifski)
+# 
+# # making the plot
+# plot <- output %>%
+#   mutate(date = as.Date(date)) %>%
+#   ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
+#   geom_line() +
+#   geom_smooth(method = 'loess')+
+#   ylab("Price of one EUR in NOK")+
+#   xlab("Date")+
+#   labs(title = "Exchange rates between EUR and NOK")+
+#   theme_classic()+
+#   transition_reveal(date)
+# 
+# 
+# # producing the GIF
+# mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
+# 
+# # saving the GIF
+# anim_save(filename="animation.gif", mygif)
 
 
 ```
@@ -75,7 +76,7 @@ ui <- function(){
   sidebarLayout(
     sidebarPanel(selectInput(inputId = "currency1",
                              label = "What is the first currency?",
-                             choices = x$description,
+                             choices = x$code,
                              multiple = FALSE,
                              selectize = TRUE,
                              width = NULL,
@@ -83,7 +84,7 @@ ui <- function(){
                  
                  selectInput(inputId = "currency2", 
                              label = "What is the second currency?",
-                             choices = x$description,
+                             choices = x$code,
                              multiple = FALSE,
                              selectize = TRUE,
                              width = NULL,
@@ -91,8 +92,8 @@ ui <- function(){
                  
                  dateRangeInput(inputId = "dates",
                                 label = "What time period do you want to look at?",
-                                start = "2000-01-01",
-                                end = NULL,
+                                start = "2020-12-01",
+                                end = Sys.Date(),
                                 min = "2000-01-01",
                                 max = Sys.Date(),
                                 format = "dd-mm-yyyy",
@@ -117,7 +118,13 @@ server <- function(input, output) {
   #the code that generates each output goes inside the render() function
   #render functions create outputs
   
-  output$text_rate <- renderText("your exchange rate is sth")
+  output$text_rate <- renderText({
+    
+    fx_rate <- historical_exchange_rates(input$currency1, to = input$currency2, start_date = Sys.Date(), end_date = Sys.Date())
+    
+    paste("1", input$currency1, "equals", fx_rate[2], input$currency2)
+    
+    })
   
   output$text_report <- renderText(print("the user report is whatever"))
   #if the data is current or if the data is not current
@@ -126,8 +133,25 @@ server <- function(input, output) {
   
   #all the code to make a plot goes between the braces and is passed on to the renderPlot() function.
   output$plot <- renderPlot({
-    title <- "this is a dummy graph"
-    hist(rnorm(100), main = title)
+    
+     table <- historical_exchange_rates(input$currency1, to = input$currency2, start_date = input$dates[1], end_date = input$dates[2])
+     
+    graph_title <- paste("the historical exchange rate of",
+                   input$currency1,
+                   "/",
+                   input$currency2)
+    
+    table %>%
+      mutate(date = as.Date(date)) %>%
+      ggplot(aes(x = date, y = table[, 2], group = 1)) +
+      geom_line() +
+      geom_smooth(method = 'loess')+
+      ylab("Currency exchange rate")+
+      xlab("Date")+
+      labs(title = graph_title)+
+      theme_classic()
+      #transition_reveal(date)
+    #plot(head(table[, 2]) , main = title)
     })
 
 }

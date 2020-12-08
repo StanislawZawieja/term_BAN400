@@ -1,9 +1,28 @@
+<<<<<<< HEAD
+=======
+alt = "This is alternate text"
+)}, deleteFile = TRUE)
+}
+```
+```{shiny App}
+#create the shiny app from the UI and the server parts
+shinyApp(ui, server)
+```
+---
+title: "Project in BAN400"
+author: "Nina, Stan and Imran (Group 99 )"
+date: "29 10 2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+>>>>>>> 64daf90cb454be67692e57d8a538bba257076a9e
 knitr::opts_chunk$set(echo = TRUE)
 #add docstring
 #use map functions if possible
 # Uploading packages that we are going to use (add more if necessary)
 library(readxl)           #reading an excel file
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
+<<<<<<< HEAD
 library(quantmod)
 # tests: data quality for currencies, proper format for dates, if newest data is not from today, inform the user that data is eg. from yesterday (report)
 #get user input
@@ -318,10 +337,24 @@ start_date = "2018-01-01", end_date = "2020-11-21")
 # Plot EUR vs NOK
 library(ggplot2)
 # Plot EUR vs NOK
+=======
+library(docstring)
+library(priceR)
+library(shiny)
+```
+```{r Make a graph and GIF}
+# import the priceR package
+library(priceR)
+# make the output
+output <- historical_exchange_rates("EUR", to = "NOK",
+start_date = "2018-01-01", end_date = "2020-11-21")
+# libraries needed to create GIF
+>>>>>>> 64daf90cb454be67692e57d8a538bba257076a9e
 library(ggplot2)
 library(tidyverse)
 library(gganimate)
 library(gifski)
+<<<<<<< HEAD
 # Need to look closer how to make the output as a data frame so we can use it
 # in the ggplot function and gif
 plot <- output %>%
@@ -385,6 +418,12 @@ plot <- output %>%
 rename(EUR_to_NOK = one_EUR_equivalent_to_x_NOK) %>%
 mutate(date = as.Date(date)) %>%
 ggplot(aes(x = date, y = EUR_to_NOK, group = 1)) +
+=======
+# making the plot
+plot <- output %>%
+mutate(date = as.Date(date)) %>%
+ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
+>>>>>>> 64daf90cb454be67692e57d8a538bba257076a9e
 geom_line() +
 geom_smooth(method = 'loess')+
 ylab("Price of one EUR in NOK")+
@@ -393,6 +432,7 @@ labs(title = "Exchange rates between EUR and NOK")+
 theme_classic()+
 transition_reveal(date)
 # producing the GIF
+<<<<<<< HEAD
 mygif <- animate(plot, renderer=gifski_renderer(loop=FALSE))
 # saving the GIF
 anim_save(filename="animation.gif", mygif)
@@ -400,6 +440,122 @@ anim_save(filename="animation.gif", mygif)
 mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
 # saving the GIF
 anim_save(filename="animation.gif", mygif)
+=======
+mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
+# saving the GIF
+anim_save(filename="animation.gif", mygif)
+```
+```{ui shiny}
+library(gapminder)
+library(ggplot2)
+library(shiny)
+library(gganimate)
+theme_set(theme_bw())
+#include input and output boxes and report on data quality
+library(shiny) # shiny package required to build the app
+x <- currencies()
+ui <- function(){
+fluidPage(
+#' User interface of the exchange rate converter
+#'
+#' @description Makes a user choose which two currencies they want to
+#' compare within a chosen time period
+#'
+#'  @usage ..
+headerPanel("Silicon valley exchange rate converter"),
+sidebarLayout(
+sidebarPanel(selectInput(inputId = "currency1",
+label = "What is the first currency?",
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
+selectInput(inputId = "currency2",
+label = "What is the second currency?",
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
+dateRangeInput(inputId = "dates",
+label = "What time period do you want to look at?",
+start = "2000-01-01",
+end = NULL,
+min = "2000-01-01",
+max = Sys.Date(),
+format = "dd-mm-yyyy",
+startview = "decade",
+weekstart = "1")),
+mainPanel(
+textOutput(outputId = "text_rate"),
+textOutput(outputId = "text_report"),
+imageOutput("plot1")))
+)
+}
+?ui #documentation of the function
+```
+```{server shiny}
+#server instructions part of the app
+server <- function(input, output) {
+#the code that generates each output goes inside the render() function
+#render functions create outputs
+output$text_rate <- renderText("your exchange rate is sth")
+output$text_report <- renderText(print("the user report is whatever"))
+#if the data is current or if the data is not current
+#how volatile is the data?
+#ask Big Hawk what we're supposed to test???
+# Making the GIF by renderImage()
+output$plot1 <- renderImage({
+# A temp file to save the output.
+# This file will be removed later by renderImage
+outfile <- tempfile(fileext='.gif')
+# making the animation
+GIF <- ggplot(gapminder, aes("currency1" , "currency2", size = pop,
+color = continent)) + geom_line() + transition_time(Day)
+anim_save("outfile.gif", animate(GIF))
+# returning a list containing the filename
+list(src = "outfile.gif",
+contentType = 'image/gif'
+width = 400,
+height = 300,
+alt = "This is alternate text"
+)}, deleteFile = TRUE)
+}
+```
+```{shiny App}
+#create the shiny app from the UI and the server parts
+shinyApp(ui, server)
+```
+---
+title: "Project in BAN400"
+author: "Nina, Stan and Imran (Group 99 )"
+date: "29 10 2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#add docstring
+#use map functions if possible
+# Uploading packages that we are going to use (add more if necessary)
+library(readxl)           #reading an excel file
+library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
+library(docstring)
+library(priceR)
+library(shiny)
+```
+```{r Make a graph and GIF}
+# import the priceR package
+library(priceR)
+# make the output
+output <- historical_exchange_rates("EUR", to = "NOK",
+start_date = "2018-01-01", end_date = "2020-11-21")
+# libraries needed to create GIF
+library(ggplot2)
+library(tidyverse)
+library(gganimate)
+library(gifski)
+>>>>>>> 64daf90cb454be67692e57d8a538bba257076a9e
 # making the plot
 plot <- output %>%
 mutate(date = as.Date(date)) %>%
@@ -410,15 +566,20 @@ ylab("Price of one EUR in NOK")+
 xlab("Date")+
 labs(title = "Exchange rates between EUR and NOK")+
 theme_classic()+
+<<<<<<< HEAD
 transition_time(date)
 # producing the GIF
 mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
 install.packages("transformr")
 library(transformr)
+=======
+transition_reveal(date)
+>>>>>>> 64daf90cb454be67692e57d8a538bba257076a9e
 # producing the GIF
 mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
 # saving the GIF
 anim_save(filename="animation.gif", mygif)
+<<<<<<< HEAD
 # making the plot
 plot <- output %>%
 mutate(date = as.Date(date)) %>%
@@ -436,64 +597,41 @@ mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FAL
 View(DKKNOK)
 ?getFX()
 ?dateRangeInput
-knitr::opts_chunk$set(echo = TRUE)
-#add docstring
-#use map functions if possible
-# Uploading packages that we are going to use (add more if necessary)
-library(readxl)           #reading an excel file
-library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
+=======
+```
+```{ui shiny}
+library(gapminder)
+library(ggplot2)
+library(shiny)
+library(gganimate)
+theme_set(theme_bw())
 #include input and output boxes and report on data quality
 library(shiny) # shiny package required to build the app
-#user interface part of the app - the website that the user uses
-ui <- fluidPage(
-#input functions
-textInput(inputId = "currency1",
+x <- currencies()
+ui <- function(){
+fluidPage(
+#' User interface of the exchange rate converter
+#'
+#' @description Makes a user choose which two currencies they want to
+#' compare within a chosen time period
+#'
+#'  @usage ..
+headerPanel("Silicon valley exchange rate converter"),
+sidebarLayout(
+sidebarPanel(selectInput(inputId = "currency1",
 label = "What is the first currency?",
-value = "",
-width = "70px",
-placeholder = "EUR"
-),
-textInput(inputId = "currency2",
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
+selectInput(inputId = "currency2",
 label = "What is the second currency?",
-value = "",
-width = "70px",
-placeholder = "NOK"
-),
-dateRangeInput(inputId = "dates",
-label = "What time period do you want to look at?",
-start = "2000-01-01",
-max = Sys.Date(),
-format = "dd-mm-yyyy",
-startview = "decade",
-weekstart = "1"
-),
-#output functions
-textOutput(outputId = "text_rate"),
-textOutput(outputId = "text_report"),
-plotOutput(outputId = "plot")
-)
-#server instructions part of the app
-server <- function(input, output) {}
-#create the shiny app from the UI and the server parts
-shinyApp(ui = ui, server = server)
-?dateRangeInput
-#include input and output boxes and report on data quality
-library(shiny) # shiny package required to build the app
-#user interface part of the app - the website that the user uses
-ui <- fluidPage(
-#input functions
-textInput(inputId = "currency1",
-label = "What is the first currency?",
-value = "",
-width = "70px",
-placeholder = "EUR"
-),
-textInput(inputId = "currency2",
-label = "What is the second currency?",
-value = "",
-width = "70px",
-placeholder = "NOK"
-),
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
 dateRangeInput(inputId = "dates",
 label = "What time period do you want to look at?",
 start = "2000-01-01",
@@ -502,15 +640,302 @@ min = "2000-01-01",
 max = Sys.Date(),
 format = "dd-mm-yyyy",
 startview = "decade",
-weekstart = "1"
-),
-#output functions
+weekstart = "1")),
+mainPanel(
 textOutput(outputId = "text_rate"),
 textOutput(outputId = "text_report"),
-plotOutput(outputId = "plot")
+imageOutput("plot1")))
 )
+}
+?ui #documentation of the function
+```
+```{server shiny}
 #server instructions part of the app
-server <- function(input, output) {}
+server <- function(input, output) {
+#the code that generates each output goes inside the render() function
+#render functions create outputs
+output$text_rate <- renderText("your exchange rate is sth")
+output$text_report <- renderText(print("the user report is whatever"))
+#if the data is current or if the data is not current
+#how volatile is the data?
+#ask Big Hawk what we're supposed to test???
+# Making the GIF by renderImage()
+output$plot1 <- renderImage({
+# A temp file to save the output.
+# This file will be removed later by renderImage
+outfile <- tempfile(fileext='.gif')
+# making the animation
+GIF <- ggplot(gapminder, aes("currency1" , "currency2", size = pop,
+color = continent)) + geom_line() + transition_time(Day)
+anim_save("outfile.gif", animate(GIF))
+# returning a list containing the filename
+list(src = "outfile.gif",
+contentType = 'image/gif'
+width = 400,
+height = 300,
+alt = "This is alternate text"
+)}, deleteFile = TRUE)
+}
+```
+```{shiny App}
+#create the shiny app from the UI and the server parts
+shinyApp(ui - ui, server = server)
+```
+---
+title: "Project in BAN400"
+author: "Nina, Stan and Imran (Group 99 )"
+date: "29 10 2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+>>>>>>> 64daf90cb454be67692e57d8a538bba257076a9e
+knitr::opts_chunk$set(echo = TRUE)
+#add docstring
+#use map functions if possible
+# Uploading packages that we are going to use (add more if necessary)
+library(readxl)           #reading an excel file
+library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
+library(docstring)
+library(priceR)
+library(shiny)
+```
+```{r Make a graph and GIF}
+# import the priceR package
+library(priceR)
+# make the output
+output <- historical_exchange_rates("EUR", to = "NOK",
+start_date = "2018-01-01", end_date = "2020-11-21")
+# libraries needed to create GIF
+library(ggplot2)
+library(tidyverse)
+library(gganimate)
+library(gifski)
+# making the plot
+plot <- output %>%
+mutate(date = as.Date(date)) %>%
+ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
+geom_line() +
+geom_smooth(method = 'loess')+
+ylab("Price of one EUR in NOK")+
+xlab("Date")+
+labs(title = "Exchange rates between EUR and NOK")+
+theme_classic()+
+transition_reveal(date)
+# producing the GIF
+mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
+# saving the GIF
+anim_save(filename="animation.gif", mygif)
+```
+```{ui shiny}
+library(gapminder)
+library(ggplot2)
+library(shiny)
+library(gganimate)
+theme_set(theme_bw())
+#include input and output boxes and report on data quality
+library(shiny) # shiny package required to build the app
+x <- currencies()
+ui <- function(){
+fluidPage(
+#' User interface of the exchange rate converter
+#'
+#' @description Makes a user choose which two currencies they want to
+#' compare within a chosen time period
+#'
+#'  @usage ..
+headerPanel("Silicon valley exchange rate converter"),
+sidebarLayout(
+sidebarPanel(selectInput(inputId = "currency1",
+label = "What is the first currency?",
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
+selectInput(inputId = "currency2",
+label = "What is the second currency?",
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
+dateRangeInput(inputId = "dates",
+label = "What time period do you want to look at?",
+start = "2000-01-01",
+end = NULL,
+min = "2000-01-01",
+max = Sys.Date(),
+format = "dd-mm-yyyy",
+startview = "decade",
+weekstart = "1")),
+mainPanel(
+textOutput(outputId = "text_rate"),
+textOutput(outputId = "text_report"),
+imageOutput("plot1")))
+)
+}
+?ui #documentation of the function
+```
+```{server shiny}
+#server instructions part of the app
+server <- function(input, output) {
+#the code that generates each output goes inside the render() function
+#render functions create outputs
+output$text_rate <- renderText("your exchange rate is sth")
+output$text_report <- renderText(print("the user report is whatever"))
+#if the data is current or if the data is not current
+#how volatile is the data?
+#ask Big Hawk what we're supposed to test???
+# Making the GIF by renderImage()
+output$plot1 <- renderImage({
+# A temp file to save the output.
+# This file will be removed later by renderImage
+outfile <- tempfile(fileext='.gif')
+# making the animation
+GIF <- ggplot(gapminder, aes("currency1" , "currency2", size = pop,
+color = continent)) + geom_line() + transition_time(Day)
+anim_save("outfile.gif", animate(GIF))
+# returning a list containing the filename
+list(src = "outfile.gif",
+contentType = 'image/gif'
+width = 400,
+height = 300,
+alt = "This is alternate text"
+)}, deleteFile = TRUE)
+}
+```
+```{shiny App}
 #create the shiny app from the UI and the server parts
 shinyApp(ui = ui, server = server)
+```
+---
+title: "Project in BAN400"
+author: "Nina, Stan and Imran (Group 99 )"
+date: "29 10 2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#add docstring
+#use map functions if possible
+# Uploading packages that we are going to use (add more if necessary)
+library(readxl)           #reading an excel file
+library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
+library(docstring)
+library(priceR)
+library(shiny)
+```
+```{r Make a graph and GIF}
+# import the priceR package
+library(priceR)
+# make the output
+output <- historical_exchange_rates("EUR", to = "NOK",
+start_date = "2018-01-01", end_date = "2020-11-21")
+# libraries needed to create GIF
+library(ggplot2)
+library(tidyverse)
+library(gganimate)
+library(gifski)
+# making the plot
+plot <- output %>%
+mutate(date = as.Date(date)) %>%
+ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
+geom_line() +
+geom_smooth(method = 'loess')+
+ylab("Price of one EUR in NOK")+
+xlab("Date")+
+labs(title = "Exchange rates between EUR and NOK")+
+theme_classic()+
+transition_reveal(date)
+# producing the GIF
+mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
+# saving the GIF
+anim_save(filename="animation.gif", mygif)
+```
+```{ui shiny}
+library(gapminder)
+library(ggplot2)
+library(shiny)
+library(gganimate)
+theme_set(theme_bw())
+#include input and output boxes and report on data quality
+library(shiny) # shiny package required to build the app
+x <- currencies()
+ui <- function(){
+fluidPage(
+#' User interface of the exchange rate converter
+#'
+#' @description Makes a user choose which two currencies they want to
+#' compare within a chosen time period
+#'
+#'  @usage ..
+headerPanel("Silicon valley exchange rate converter"),
+sidebarLayout(
+sidebarPanel(selectInput(inputId = "currency1",
+label = "What is the first currency?",
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
+selectInput(inputId = "currency2",
+label = "What is the second currency?",
+choices = x$description,
+multiple = FALSE,
+selectize = TRUE,
+width = NULL,
+size = NULL),
+dateRangeInput(inputId = "dates",
+label = "What time period do you want to look at?",
+start = "2000-01-01",
+end = NULL,
+min = "2000-01-01",
+max = Sys.Date(),
+format = "dd-mm-yyyy",
+startview = "decade",
+weekstart = "1")),
+mainPanel(
+textOutput(outputId = "text_rate"),
+textOutput(outputId = "text_report"),
+imageOutput("plot1")))
+)
+}
+?ui #documentation of the function
+```
+```{server shiny}
+#server instructions part of the app
+server <- function(input, output) {
+#the code that generates each output goes inside the render() function
+#render functions create outputs
+output$text_rate <- renderText("your exchange rate is sth")
+output$text_report <- renderText(print("the user report is whatever"))
+#if the data is current or if the data is not current
+#how volatile is the data?
+#ask Big Hawk what we're supposed to test???
+# Making the GIF by renderImage()
+output$plot1 <- renderImage({
+# A temp file to save the output.
+# This file will be removed later by renderImage
+outfile <- tempfile(fileext='.gif')
+# making the animation
+GIF <- ggplot(gapminder, aes("currency1" , "currency2", size = pop,
+color = continent)) + geom_line() + transition_time(Day)
+anim_save("outfile.gif", animate(GIF))
+# returning a list containing the filename
+list(src = "outfile.gif",
+contentType = 'image/gif'
+width = 400,
+height = 300,
+alt = "This is alternate text"
+)}, deleteFile = TRUE)
+}
+```
+```{shiny App}
+#create the shiny app from the UI and the server parts
+<<<<<<< HEAD
+shinyApp(ui = ui, server = server)
 >>>>>>> bcdfc75e4f843710cc91bf7cd60c6f760c7bd371
+=======
+shinyApp(ui, server)
+```
+>>>>>>> 64daf90cb454be67692e57d8a538bba257076a9e
