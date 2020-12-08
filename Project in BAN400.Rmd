@@ -38,42 +38,52 @@ library(shiny) # shiny package required to build the app
 x <- currencies()
 
 ui <- function(){
+  #' User interface of the exchange rate converter on our website
   fluidPage(
-  #' User interface of the exchange rate converter
+    headerPanel("Silicon valley exchange rate converter"),
   #' 
   #' @description Makes a user choose which two currencies they want to
   #' compare within a chosen time period
   #' 
-  #'  @usage .. 
-  headerPanel("Very cool silicon valley exchange rate converter"),
-  
+  #' @usage ui()
+  #'
+  #' @details The function creates a sidebar layout on a website with panels
+  #' of which two currencies the user wants to compare, and a time period with
+  #' consisting of a start and end date. The input is already built in for each
+  #' panel, which forces the user to insert the information in the correct
+  #' format that is needed in the process of comparison. This is done to
+  #' eliminate testing the users input information and errors that can occur.
+  #' The main part of this function is the output, which in this case is .... 
+  #' 
+  #'
   sidebarLayout(
     sidebarPanel(selectInput(inputId = "currency1",
                              label = "What is the first currency?",
-                             choices = x$code,
+                             choices = df$currencies,
                              multiple = FALSE,
                              selectize = TRUE,
                              width = NULL,
                              size = NULL),
-                 
+  #'               
                  selectInput(inputId = "currency2", 
                              label = "What is the second currency?",
-                             choices = x$code,
+                             choices = df$currencies,
                              multiple = FALSE,
                              selectize = TRUE,
                              width = NULL,
                              size = NULL),
-                 
+  #'               
                  dateRangeInput(inputId = "dates",
                                 label = "What time period do you want to look at?",
-                                start = "2020-12-01",
-                                end = Sys.Date(),
+                                start = "2000-01-01",
+                                end = NULL,
                                 min = "2000-01-01",
                                 max = Sys.Date(),
                                 format = "dd-mm-yyyy",
                                 startview = "decade",
                                 weekstart = "1")),
-                
+  
+  #'          
                 mainPanel(#img(src = "something.png", height = 140, width = 400), #for the gif or something
                           textOutput(outputId = "text_rate"),
                           textOutput(outputId = "text_report"),
