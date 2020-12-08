@@ -71,7 +71,7 @@ ui <- function(){
   #' compare within a chosen time period
   #' 
   #'  @usage .. 
-  headerPanel("Silicon valley exchange rate converter"),
+  headerPanel("Very cool silicon valley exchange rate converter"),
   
   sidebarLayout(
     sidebarPanel(selectInput(inputId = "currency1",
