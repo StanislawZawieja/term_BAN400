@@ -8,60 +8,26 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-#add docstring
-#use map functions if possible
+# add docstring
 
 # Uploading packages that we are going to use (add more if necessary)
 library(readxl)           #reading an excel file
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
 library(docstring)
 library(priceR)
-library(shiny)
-```
-
-```{r Make a graph and GIF}
-
-# import the priceR package
-library(priceR)
-
-# make the output
-output <- historical_exchange_rates("EUR", to = "NOK",
-                          start_date = "2018-01-01", end_date = "2020-11-21")
-
-
-# # libraries needed to create GIF
-# library(ggplot2)
-# library(tidyverse)
-# library(gganimate)
-# library(gifski)
-# 
-# # making the plot
-# plot <- output %>%
-#   mutate(date = as.Date(date)) %>%
-#   ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
-#   geom_line() +
-#   geom_smooth(method = 'loess')+
-#   ylab("Price of one EUR in NOK")+
-#   xlab("Date")+
-#   labs(title = "Exchange rates between EUR and NOK")+
-#   theme_classic()+
-#   transition_reveal(date)
-# 
-# 
-# # producing the GIF
-# mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
-# 
-# # saving the GIF
-# anim_save(filename="animation.gif", mygif)
-
+library(shiny) # shiny package required to build the ap
+library(shinycssloaders) # adds automatic loading animations to our Shiny plot
+library(tidyr)
+library(stringr)
 
 ```
+
 
 ```{ui shiny}
-#include input and output boxes and report on data quality
-library(shiny) # shiny package required to build the app
+# include input and output boxes and report on data quality
 
-x <- currencies()
+x <- currencies() %>% 
+  unite(., "currencies", description:code, sep = ": ", remove = FALSE)
 
 ui <- function(){
   fluidPage(
@@ -76,7 +42,7 @@ ui <- function(){
   sidebarLayout(
     sidebarPanel(selectInput(inputId = "currency1",
                              label = "What is the first currency?",
-                             choices = x$code,
+                             choices = x$currencies,
                              multiple = FALSE,
                              selectize = TRUE,
                              width = NULL,
@@ -84,7 +50,7 @@ ui <- function(){
                  
                  selectInput(inputId = "currency2", 
                              label = "What is the second currency?",
-                             choices = x$code,
+                             choices = x$currencies,
                              multiple = FALSE,
                              selectize = TRUE,
                              width = NULL,
@@ -100,46 +66,56 @@ ui <- function(){
                                 startview = "decade",
                                 weekstart = "1")),
                 
-                mainPanel(#img(src = "something.png", height = 140, width = 400), #for the gif or something
-                          textOutput(outputId = "text_rate"),
+                mainPanel(textOutput(outputId = "text_rate"),
                           textOutput(outputId = "text_report"),
-                          plotOutput(outputId = "plot"))) 
+                          withSpinner(plotOutput(outputId = "plot")))) 
 )
 }
 
-?ui #documentation of the function
+#?ui #documentation of the function
 
 ```
 
+
 ```{server shiny}
-#server instructions part of the app
+
+# server instructions part of the app
 server <- function(input, output) {
-  
-  #the code that generates each output goes inside the render() function
-  #render functions create outputs
+  # the code that generates each output goes inside the render() function
+  # render functions create outputs
   
   output$text_rate <- renderText({
     
-    fx_rate <- historical_exchange_rates(input$currency1, to = input$currency2, start_date = Sys.Date(), end_date = Sys.Date())
+    inputx1 <- sapply(strsplit(input$currency1,': '),
+                              "[", 2)
+    inputx2 <- sapply(strsplit(input$currency2,': '),
+                              "[", 2)
     
-    paste("Currently, 1", input$currency1, "equals", fx_rate[2], input$currency2)
+    fx_rate <- historical_exchange_rates(inputx1,
+    to = inputx2, start_date = Sys.Date(), end_date = Sys.Date())
+    
+    paste("Currently, 1", inputx1, "equals", fx_rate[2], inputx2)
     
     })
   
   output$text_report <- renderText(print("the user report is whatever"))
-  #if the data is current or if the data is not current
-#how volatile is the data?
-#ask Big Hawk what we're supposed to test???
+  # if the data is current or if the data is not current
+  # how volatile is the data?
   
-  #all the code to make a plot goes between the braces and is passed on to the renderPlot() function.
+  # all the code to make a plot goes between the braces and is passed on to the       renderPlot() function.
   output$plot <- renderPlot({
     
-     table <- historical_exchange_rates(input$currency1, to = input$currency2, start_date = input$dates[1], end_date = input$dates[2])
+    inputx1 <- sapply(strsplit(input$currency1,': '),
+                              "[", 2)
+    inputx2 <- sapply(strsplit(input$currency2,': '),
+                              "[", 2)
+    
+     table <- historical_exchange_rates(inputx1, to = inputx2, start_date = input$dates[1], end_date = input$dates[2])
      
-    graph_title <- paste("the historical exchange rate of",
-                   input$currency1,
+    graph_title <- paste("The historical exchange rate of",
+                   inputx1,
                    "/",
-                   input$currency2)
+                   inputx2)
     
     table %>%
       mutate(date = as.Date(date)) %>%
@@ -152,14 +128,13 @@ server <- function(input, output) {
       theme_classic()
       #transition_reveal(date)
     })
-
 }
 
 ```
 
 
 ```{shiny App}
-#create the shiny app from the UI and the server parts
+# create the shiny app from the UI and the server parts
 shinyApp(ui = ui, server = server)
 ```
 
