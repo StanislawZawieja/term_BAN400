@@ -8,8 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# add docstring
-
 # Uploading packages that we are going to use (add more if necessary)
 library(readxl)           #reading an excel file
 library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
@@ -19,43 +17,9 @@ library(shiny) # shiny package required to build the ap
 library(shinycssloaders) # adds automatic loading animations to our Shiny plot
 library(tidyr)
 library(stringr)
+library(ggplot2)
 
 ```
-
-
-# import the priceR package
-library(priceR)
-
-# make the output
-output <- historical_exchange_rates("EUR", to = "NOK",
-                          start_date = "2018-01-01", end_date = "2020-11-21")
-
-
-# # libraries needed to create GIF
-# library(ggplot2)
-# library(tidyverse)
-# library(gganimate)
-# library(gifski)
-# 
-# # making the plot
-# plot <- output %>%
-#   mutate(date = as.Date(date)) %>%
-#   ggplot(aes(x = date, y = one_EUR_equivalent_to_x_NOK, group = 1)) +
-#   geom_line() +
-#   geom_smooth(method = 'loess')+
-#   ylab("Price of one EUR in NOK")+
-#   xlab("Date")+
-#   labs(title = "Exchange rates between EUR and NOK")+
-#   theme_classic()+
-#   transition_reveal(date)
-# 
-# 
-# # producing the GIF
-# mygif <- animate(plot, width=1600, height=800, renderer=gifski_renderer(loop=FALSE))
-# 
-# # saving the GIF
-# anim_save(filename="animation.gif", mygif)
-
 
 ```
 
@@ -70,11 +34,7 @@ output <- historical_exchange_rates("EUR", to = "NOK",
 ```
 
 ```{ui shiny}
-#include input and output boxes and report on data quality
-library(shiny) # shiny package required to build the app
-#include input and output boxes and report on data quality
 # include input and output boxes and report on data quality
-
 x <- currencies() %>% 
   unite(., "currencies", description:code, sep = ": ", remove = FALSE)
 
@@ -82,70 +42,62 @@ ui <- function(){
   #' User interface of the exchange rate converter on our website
   fluidPage(
     headerPanel("Silicon valley exchange rate converter"),
-  #' 
-  #' @description Makes a user choose which two currencies they want to
-  #' compare within a chosen time period
-  #' 
-  #' @usage ui()
-  #'
-  #' @details The function creates a sidebar layout on a website with panels
-  #' of which two currencies the user wants to compare, and a time period with
-  #' consisting of a start and end date. The input is already built in for each
-  #' panel, which forces the user to insert the information in the correct
-  #' format that is needed in the process of comparison. This is done to
-  #' eliminate testing the users input information and errors that can occur.
-  #' The main part of this function is the output, which in this case is .... 
-  #' 
-  #'
-  sidebarLayout(
-    sidebarPanel(selectInput(inputId = "currency1",
-                             label = "What is the first currency?",
-                             choices = x$code,
-                             multiple = FALSE,
-                             choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$code, value = T),
-                                            "All currencies" = x$code),
-                             choices = x$currencies,
-                             multiple = FALSE,
-                             selectize = TRUE,
-                             width = NULL,
-                             size = NULL),
-  #'               
-                 selectInput(inputId = "currency2", 
-                             label = "What is the second currency?",
-                             choices = x$currencies,
-                             multiple = FALSE,
-                             selectize = TRUE,
-                             width = NULL,
-                             size = NULL),
-  #'               
-                 dateRangeInput(inputId = "dates",
-                                label = "What time period do you want to look at?",
-                                start = "2000-01-01",
-                                end = NULL,
-                                min = "2000-01-01",
-                                max = Sys.Date(),
-                                format = "dd-mm-yyyy",
-                                startview = "decade",
-                                weekstart = "1")),
-  #'          
-                mainPanel(textOutput(outputId = "text_rate"),
-                          textOutput(outputId = "text_report"),
-                          withSpinner(plotOutput(outputId = "plot")))) 
-)
+    #' 
+    #' @description Makes a user choose which two currencies they want to
+    #' compare within a chosen time period
+    #' 
+    #' @usage ui()
+    #'
+    #' @details The function creates a sidebar layout on a website with panels
+    #' of which two currencies the user wants to compare, and a time period with
+    #' consisting of a start and end date. The input is already built in for each
+    #' panel, which forces the user to insert the information in the correct
+    #' format that is needed in the process of comparison. This is done to
+    #' eliminate testing the users input information and errors that can occur.
+    #' The main part of this function is the output, which in this case is .... 
+    #' 
+    #'
+    sidebarLayout(
+      sidebarPanel(selectInput(inputId = "currency1",
+                               label = "What is the first currency?",
+                               choices = x$currencies,
+                               #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
+                                #              "All currencies" = x$currencies), #grouping, but its a fail for now
+                               multiple = FALSE,
+                               selectize = TRUE,
+                               width = NULL,
+                               size = NULL),
+                   #'               
+                   selectInput(inputId = "currency2", 
+                               label = "What is the second currency?",
+                               choices = x$currencies,
+                               #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
+                               #              "All currencies" = x$currencies),
+                               multiple = FALSE,
+                               selectize = TRUE,
+                               width = NULL,
+                               size = NULL),
+                   #'               
+                   dateRangeInput(inputId = "dates",
+                                  label = "What time period do you want to look at?",
+                                  start = "2000-01-01",
+                                  end = NULL,
+                                  min = "2000-01-01",
+                                  max = Sys.Date(),
+                                  format = "dd-mm-yyyy",
+                                  startview = "decade",
+                                  weekstart = "1")),
+      #'          
+      mainPanel(textOutput(outputId = "text_rate"),
+                textOutput(outputId = "text_report"),
+                withSpinner(plotOutput(outputId = "plot")))) 
+  )
 }
-
-?ui #documentation of the function
-
-#?ui #documentation of the function
 
 ```
 
 
 ```{server shiny}
-#server instructions part of the app
-library(ggplot2)
-#server instructions part of the app
-
 # server instructions part of the app
 server <- function(input, output) {
   # the code that generates each output goes inside the render() function
