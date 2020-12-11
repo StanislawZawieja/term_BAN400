@@ -5,7 +5,8 @@ date: "29 10 2020"
 output: html_document
 ---
 
-```{setup}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 
 # Load libraries 
 library(tidyverse)      
