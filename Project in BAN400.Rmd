@@ -9,14 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 # Uploading packages that we are going to use (add more if necessary)
-library(readxl)           # reading an excel file
 library(tidyverse)        # for ggplot2, magrittr pipes, dplyr, etc
-library(docstring)        # for documentation
 library(priceR)           # to get currency data
-library(shiny)            # shiny package required to build the ap
-library(shinycssloaders)  # adds automatic loading animations to our Shiny plot
-library(tidyr)          
-library(stringr)
+library(shiny)            # shiny package required to build the app
+library(tidyr)            # for the unite function to make a new column
 library(ggplot2)          # to make a plot
 
 ```
