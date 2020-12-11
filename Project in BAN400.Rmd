@@ -148,7 +148,8 @@ server <- function(input, output) {
                          currency_code1,
                          "/",
                          currency_code2)
-    
+    # making a ggplot from the table with currency rates
+    # adding smoothing and a trend line
     rates_table %>%
       mutate(date = as.Date(date)) %>%
       ggplot(aes(x = date, y = rates_table[, 2], group = 1)) +
