@@ -136,7 +136,7 @@ server <- function(input, output) {
     currency_code2 <- sapply(strsplit(input$currency2, ': '),
                       "[", 2)
     
-    table <-
+    rates_table <-
       historical_exchange_rates(
         currency_code1,
         to = currency_code2,
@@ -149,9 +149,9 @@ server <- function(input, output) {
                          "/",
                          currency_code2)
     
-    table %>%
+    rates_table %>%
       mutate(date = as.Date(date)) %>%
-      ggplot(aes(x = date, y = table[, 2], group = 1)) +
+      ggplot(aes(x = date, y = rates_table[, 2], group = 1)) +
       geom_line() +
       geom_smooth(method = 'loess') +
       ylab("Currency exchange rate") +
