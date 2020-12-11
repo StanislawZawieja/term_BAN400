@@ -101,7 +101,8 @@ ui <- fluidPage(
 
 ```{server shiny}
 server <- function(input, output) {
-  # string slicing to get the three-letter currency code
+  
+  # String slicing to get the three-letter currency code
   output$text_rate <- renderText({
     currency_code1 <- sapply(strsplit(input$currency1, ': '),
                              "[", 2)
@@ -123,6 +124,8 @@ server <- function(input, output) {
     
   })
   
+  # If-statement to display a warning message when the user compares two of
+  # the same currencies
   output$text_report <-
     renderText({
       if (input$currency1 == input$currency2) {
@@ -148,7 +151,8 @@ server <- function(input, output) {
                          currency_code1,
                          "/",
                          currency_code2)
-    # making a ggplot from the table with currency rates
+    
+    # Making a ggplot from the table with currency rates
     # adding smoothing and a trend line
     rates_table %>%
       mutate(date = as.Date(date)) %>%
@@ -166,7 +170,7 @@ server <- function(input, output) {
 
 
 ```{shiny App}
-# create the shiny app from the UI and the server parts
+# Create the shiny app from the UI and the server parts
 shinyApp(ui = ui, server = server)
 ```
 
