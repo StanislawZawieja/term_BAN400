@@ -100,17 +100,13 @@ ui <- fluidPage(
 
 
 ```{server shiny}
-# server instructions part of the app
 server <- function(input, output) {
-  
-  # the code that generates each output goes inside the render() function
-  # render functions create outputs
-  
+  # string slicing to get the three-letter currency code
   output$text_rate <- renderText({
     currency_code1 <- sapply(strsplit(input$currency1, ': '),
-                      "[", 2)
+                             "[", 2)
     currency_code2 <- sapply(strsplit(input$currency2, ': '),
-                      "[", 2)
+                             "[", 2)
     
     fx_rate <- historical_exchange_rates(
       currency_code1,
@@ -119,23 +115,26 @@ server <- function(input, output) {
       end_date = Sys.Date()
     )
     
-    paste("Currently, 1", currency_code1, "equals", fx_rate[2], currency_code2)
+    paste("Currently, 1",
+          currency_code1,
+          "equals",
+          fx_rate[2],
+          currency_code2)
     
   })
   
   output$text_report <-
     renderText({
-      if(input$currency1 == input$currency2){
-       print("WARNING: Your currencies are the same.")
+      if (input$currency1 == input$currency2) {
+        print("WARNING: Your currencies are the same.")
       }
-      })
+    })
   
-  # all the code to make a plot goes between the braces and is passed on to the       renderPlot() function.
   output$plot <- renderPlot({
     currency_code1 <- sapply(strsplit(input$currency1, ': '),
-                      "[", 2)
+                             "[", 2)
     currency_code2 <- sapply(strsplit(input$currency2, ': '),
-                      "[", 2)
+                             "[", 2)
     
     rates_table <-
       historical_exchange_rates(
