@@ -93,7 +93,8 @@ ui <- function() {
       #'          
       mainPanel(
         tags$h4(textOutput(outputId = "text_rate")),
-        tags$b(textOutput(outputId = "text_report")),
+        tags$span(style="color:red",textOutput(outputId = "text_report")),
+        tags$hr(),
         tags$br(),
         withSpinner(plotOutput(outputId = "plot"))
      ))
