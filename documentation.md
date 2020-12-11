@@ -20,7 +20,7 @@ The app uses *selectInput()* to prompt the user to input values for currency1 an
 
 The app uses *dateRangeInput()* to prompt the user to choose two dates which are the start and the end of the time period relevant for the user. The app will display historical currency data only for the chosen time period. The earliest and latest possible choices (01-01-2000 and the current date) correspond to the dates available in the *priceR* package. This is why there is no need to test whether the user entered a correct date. The input is formatted to have convenient default values, date display format, and week display format. The selection starts at the decade level which makes it easier to select a different year.
 
-### Graphical user interface - Nina
+### Graphical user interface - Ninas
 
 ## Output - Imran
 
