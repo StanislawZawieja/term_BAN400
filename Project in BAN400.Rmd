@@ -122,7 +122,7 @@ server <- function(input, output) {
       end_date = Sys.Date()
     )
     
-    paste("Currently, 1", inputx1, "equals", fx_rate[2], inputx2)
+    paste("Currently, 1", currency_code1, "equals", fx_rate[2], currency_code2)
     
   })
   
