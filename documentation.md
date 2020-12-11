@@ -2,8 +2,10 @@ Group project BAN400: Exchange rate converter
 ---------------------------------------------
 
 ## Purpose
-The purpose of this project is to create an application that interacts with a user to convert exchange rates. The
-user is free to choose between which two currencies they want to compare within a time period.
+The purpose of this project is to create an application that interacts with a user to
+convert exchange rates, and display visualize the comparison in different methods. The
+user is free to choose between which two currencies within a time period they want to
+compare.
 
 ## Packages
 *Currency exchange rate converter* uses the *priceR* package to access currency exchange data which is necessary for its main functionality. *Tidyverse* packages make it convenient to build the app because of the ability to use pipes. The *Shiny* package is required to build the Shiny app, the *tidyr* package contains the *unite()* function which is useful for data wrangling. The *shinycssloaders* package contains *withSpinner()* which is used to produce a spinner while the plot is loading. The historical exchange rate data is displayed in a graph format using the *ggplot2* package. 
