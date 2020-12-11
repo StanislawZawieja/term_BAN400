@@ -110,14 +110,14 @@ server <- function(input, output) {
   # render functions create outputs
   
   output$text_rate <- renderText({
-    inputx1 <- sapply(strsplit(input$currency1, ': '),
+    currency_code1 <- sapply(strsplit(input$currency1, ': '),
                       "[", 2)
-    inputx2 <- sapply(strsplit(input$currency2, ': '),
+    currency_code2 <- sapply(strsplit(input$currency2, ': '),
                       "[", 2)
     
     fx_rate <- historical_exchange_rates(
-      inputx1,
-      to = inputx2,
+      currency_code1,
+      to = currency_code2,
       start_date = Sys.Date(),
       end_date = Sys.Date()
     )
@@ -133,23 +133,23 @@ server <- function(input, output) {
   
   # all the code to make a plot goes between the braces and is passed on to the       renderPlot() function.
   output$plot <- renderPlot({
-    inputx1 <- sapply(strsplit(input$currency1, ': '),
+    currency_code1 <- sapply(strsplit(input$currency1, ': '),
                       "[", 2)
-    inputx2 <- sapply(strsplit(input$currency2, ': '),
+    currency_code2 <- sapply(strsplit(input$currency2, ': '),
                       "[", 2)
     
     table <-
       historical_exchange_rates(
-        inputx1,
-        to = inputx2,
+        currency_code1,
+        to = currency_code2,
         start_date = input$dates[1],
         end_date = input$dates[2]
       )
     
     graph_title <- paste("The historical exchange rate of",
-                         inputx1,
+                         currency_code1,
                          "/",
-                         inputx2)
+                         currency_code2)
     
     table %>%
       mutate(date = as.Date(date)) %>%
