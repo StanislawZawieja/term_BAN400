@@ -21,18 +21,6 @@ library(ggplot2)
 
 ```
 
-```
-
-# import the priceR package
-library(priceR)
-
-# make the output
-output <- historical_exchange_rates("EUR", to = "NOK",
-                          start_date = "2018-01-01", end_date = "2020-11-21")
-
-
-```
-
 ```{ui shiny}
 # include input and output boxes and report on data quality
 x <- currencies() %>%
