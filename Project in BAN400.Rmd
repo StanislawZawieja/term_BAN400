@@ -165,7 +165,7 @@ server <- function(input, output) {
       ylab("Currency exchange rate") +
       xlab("Date") +
       ggtitle(graph_title) +
-      theme_classic()
+      theme_light()
   })
 }
 
