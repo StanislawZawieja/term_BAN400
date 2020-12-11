@@ -6,7 +6,7 @@ The purpose of this project is to create an application that interacts with a us
 user is free to choose between which two currencies they want to compare within a time period.
 
 ## Packages
-*Currency exchange rate converter* uses the *priceR* package to access currency exchange data which is necessary for its main functionality. *Tidyverse* packages make it convenient to build the app because of the ability to use pipes. The *Shiny* package is required to build the Shiny app, the *tidyr* package contains the *unite()* function which is useful for data wrangling. The historical exchange rate data is displayed in a graph format using the *ggplot2* package.
+*Currency exchange rate converter* uses the *priceR* package to access currency exchange data which is necessary for its main functionality. *Tidyverse* packages make it convenient to build the app because of the ability to use pipes. The *Shiny* package is required to build the Shiny app, the *tidyr* package contains the *unite()* function which is useful for data wrangling. The *shinycssloaders* package contains *withSpinner()* which is used to produce a spinner while the plot is loading. The historical exchange rate data is displayed in a graph format using the *ggplot2* package. 
 
 ## Input
 The user of *Currency exchange rate converter* can specify two different currencies and a range between two chosen dates. The three inputs, two strings with the currencies and one vector with two dates, are later used to generate outputs.
