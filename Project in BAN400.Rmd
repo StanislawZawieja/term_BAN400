@@ -94,6 +94,7 @@ ui <- function() {
       mainPanel(
         textOutput(outputId = "text_rate"),
         textOutput(outputId = "text_report"),
+        /newline
         withSpinner(plotOutput(outputId = "plot"))
       ))
   )
@@ -127,7 +128,12 @@ server <- function(input, output) {
   })
   
   output$text_report <-
-    renderText(print("the user report is whatever"))
+    renderText(
+      if(
+        input$currency1 == input$currency2
+      ) {
+      write("warning: your currencies are the same")
+      })
   # if the data is current or if the data is not current
   # how volatile is the data?
   
