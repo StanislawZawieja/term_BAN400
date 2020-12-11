@@ -10,7 +10,7 @@ Group project BAN400: Exchange rate converter
 
 ## Input - Stan
 
-The user of *Currency exchange rate converter* can specify two different currencies and a range between two chosen dates.
+The user of *Currency exchange rate converter* can specify two different currencies and a range between two chosen dates. The three inputs, two strings with the currencies and one vector with two dates, are later used to generate outputs.
 
 ### Currency inputs
 
