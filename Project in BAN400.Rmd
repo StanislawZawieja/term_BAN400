@@ -13,6 +13,7 @@ library(tidyverse)
 library(priceR)          
 library(shiny)            
 library(tidyr)
+library(shinycssloaders)
 library(ggplot2)
 
 ```
@@ -27,7 +28,7 @@ currency_names <- currencies() %>%
         remove = FALSE)
 
 # User interface of the exchange rate converter on our app
-ui <- function(fluidPage(
+ui <- fluidPage(
   headerPanel("Currency exchange rate converter"),
   
   sidebarLayout(
@@ -93,7 +94,6 @@ ui <- function(fluidPage(
       withSpinner(plotOutput(outputId = "plot"))
     )
   )
-)
 )
 
 ```
