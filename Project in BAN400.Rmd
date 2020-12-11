@@ -35,13 +35,16 @@ output <- historical_exchange_rates("EUR", to = "NOK",
 
 ```{ui shiny}
 # include input and output boxes and report on data quality
-x <- currencies() %>% 
-  unite(., "currencies", description:code, sep = ": ", remove = FALSE)
+x <- currencies() %>%
+  unite(.,
+        "currencies",
+        description:code,
+        sep = ": ",
+        remove = FALSE)
 
-ui <- function(){
+ui <- function() {
   #' User interface of the exchange rate converter on our website
-  fluidPage(
-    headerPanel("Silicon valley exchange rate converter"),
+  fluidPage(headerPanel("Silicon valley exchange rate converter"), 
     #' 
     #' @description Makes a user choose which two currencies they want to
     #' compare within a chosen time period
@@ -58,39 +61,48 @@ ui <- function(){
     #' 
     #'
     sidebarLayout(
-      sidebarPanel(selectInput(inputId = "currency1",
-                               label = "What is the first currency?",
-                               choices = x$currencies,
+      sidebarPanel(
+        selectInput(
+          inputId = "currency1",
+          label = "What is the first currency?",
+          choices = x$currencies,
+          
                                #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
                                 #              "All currencies" = x$currencies), #grouping, but its a fail for now
-                               multiple = FALSE,
-                               selectize = TRUE,
-                               width = NULL,
-                               size = NULL),
+          multiple = FALSE,
+          selectize = TRUE,
+          width = NULL,
+          size = NULL), 
                    #'               
-                   selectInput(inputId = "currency2", 
+                   selectInput(inputId = "currency2",
                                label = "What is the second currency?",
                                choices = x$currencies,
+                               
                                #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
                                #              "All currencies" = x$currencies),
+                               
                                multiple = FALSE,
                                selectize = TRUE,
                                width = NULL,
-                               size = NULL),
+                               size = NULL), 
                    #'               
-                   dateRangeInput(inputId = "dates",
-                                  label = "What time period do you want to look at?",
-                                  start = "2000-01-01",
-                                  end = NULL,
-                                  min = "2000-01-01",
-                                  max = Sys.Date(),
-                                  format = "dd-mm-yyyy",
-                                  startview = "decade",
-                                  weekstart = "1")),
+                   dateRangeInput(
+                     inputId = "dates",
+                     label = "What time period do you want to look at?",
+                     start = "2000-01-01",
+                     end = NULL,
+                     min = "2000-01-01",
+                     max = Sys.Date(),
+                     format = "dd-mm-yyyy",
+                     startview = "decade",
+                     weekstart = "1"
+                   )), 
       #'          
-      mainPanel(textOutput(outputId = "text_rate"),
-                textOutput(outputId = "text_report"),
-                withSpinner(plotOutput(outputId = "plot")))) 
+      mainPanel(
+        textOutput(outputId = "text_rate"),
+        textOutput(outputId = "text_report"),
+        withSpinner(plotOutput(outputId = "plot"))
+      ))
   )
 }
 
@@ -100,52 +112,62 @@ ui <- function(){
 ```{server shiny}
 # server instructions part of the app
 server <- function(input, output) {
+  
   # the code that generates each output goes inside the render() function
   # render functions create outputs
   
   output$text_rate <- renderText({
+    inputx1 <- sapply(strsplit(input$currency1, ': '),
+                      "[", 2)
+    inputx2 <- sapply(strsplit(input$currency2, ': '),
+                      "[", 2)
     
-    inputx1 <- sapply(strsplit(input$currency1,': '),
-                              "[", 2)
-    inputx2 <- sapply(strsplit(input$currency2,': '),
-                              "[", 2)
-    
-    fx_rate <- historical_exchange_rates(inputx1,
-    to = inputx2, start_date = Sys.Date(), end_date = Sys.Date())
+    fx_rate <- historical_exchange_rates(
+      inputx1,
+      to = inputx2,
+      start_date = Sys.Date(),
+      end_date = Sys.Date()
+    )
     
     paste("Currently, 1", inputx1, "equals", fx_rate[2], inputx2)
     
-    })
+  })
   
-  output$text_report <- renderText(print("the user report is whatever"))
+  output$text_report <-
+    renderText(print("the user report is whatever"))
   # if the data is current or if the data is not current
   # how volatile is the data?
   
   # all the code to make a plot goes between the braces and is passed on to the       renderPlot() function.
   output$plot <- renderPlot({
+    inputx1 <- sapply(strsplit(input$currency1, ': '),
+                      "[", 2)
+    inputx2 <- sapply(strsplit(input$currency2, ': '),
+                      "[", 2)
     
-    inputx1 <- sapply(strsplit(input$currency1,': '),
-                              "[", 2)
-    inputx2 <- sapply(strsplit(input$currency2,': '),
-                              "[", 2)
+    table <-
+      historical_exchange_rates(
+        inputx1,
+        to = inputx2,
+        start_date = input$dates[1],
+        end_date = input$dates[2]
+      )
     
-     table <- historical_exchange_rates(inputx1, to = inputx2, start_date = input$dates[1], end_date = input$dates[2])
-     
     graph_title <- paste("The historical exchange rate of",
-                   inputx1,
-                   "/",
-                   inputx2)
+                         inputx1,
+                         "/",
+                         inputx2)
     
     table %>%
       mutate(date = as.Date(date)) %>%
       ggplot(aes(x = date, y = table[, 2], group = 1)) +
       geom_line() +
-      geom_smooth(method = 'loess')+
-      ylab("Currency exchange rate")+
-      xlab("Date")+
-      labs(title = graph_title)+
+      geom_smooth(method = 'loess') +
+      ylab("Currency exchange rate") +
+      xlab("Date") +
+      labs(title = graph_title) +
       theme_classic()
-    })
+  })
 }
 
 ```
