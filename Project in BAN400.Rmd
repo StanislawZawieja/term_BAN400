@@ -94,6 +94,7 @@ ui <- function() {
       mainPanel(
         textOutput(outputId = "text_rate"),
         tags$b(textOutput(outputId = "text_report")),
+        tags$br(),
         withSpinner(plotOutput(outputId = "plot"))
      ))
   )
