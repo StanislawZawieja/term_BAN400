@@ -129,7 +129,7 @@ server <- function(input, output) {
   output$text_report <-
     renderText({
       if(input$currency1 == input$currency2){
-       print("warning: your currencies are the same")
+       print("WARNING: Your currencies are the same.")
       }
       })
   # if the data is current or if the data is not current
@@ -162,7 +162,7 @@ server <- function(input, output) {
       geom_smooth(method = 'loess') +
       ylab("Currency exchange rate") +
       xlab("Date") +
-      labs(title = graph_title) +
+      ggtitle(graph_title) +
       theme_classic()
   })
 }
