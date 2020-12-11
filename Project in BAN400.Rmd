@@ -9,14 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 # Uploading packages that we are going to use (add more if necessary)
-library(readxl)           # reading an excel file
 library(tidyverse)        # for ggplot2, magrittr pipes, dplyr, etc
-library(docstring)        # for documentation
 library(priceR)           # to get currency data
-library(shiny)            # shiny package required to build the ap
-library(shinycssloaders)  # adds automatic loading animations to our Shiny plot
-library(tidyr)          
-library(stringr)
+library(shiny)            # shiny package required to build the app
+library(tidyr)            # for the unite function to make a new column
 library(ggplot2)          # to make a plot
 
 ```
@@ -55,9 +51,6 @@ ui <- function() {
           label = "What is the first currency?",
           choices = x$currencies,
           selected = "Polish Zloty: PLN",
-          
-          #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
-          #              "All currencies" = x$currencies), #grouping, but its a fail for now
           multiple = FALSE,
           selectize = TRUE,
           width = NULL,
@@ -69,10 +62,6 @@ ui <- function() {
           label = "What is the second currency?",
           choices = x$currencies,
           selected = "Norwegian Krone: NOK",
-          
-          #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
-          #              "All currencies" = x$currencies),
-          
           multiple = FALSE,
           selectize = TRUE,
           width = NULL,
@@ -89,15 +78,15 @@ ui <- function() {
           format = "dd-mm-yyyy",
           startview = "decade",
           weekstart = "1"
-        )), 
-      #'          
+        )),
+      #'
       mainPanel(
         tags$h4(textOutput(outputId = "text_rate")),
-        tags$span(style="color:red",textOutput(outputId = "text_report")),
+        tags$span(style = "color:red", textOutput(outputId = "text_report")),
         tags$hr(),
         tags$br(),
         withSpinner(plotOutput(outputId = "plot"))
-     ))
+      ))
   )
 }
 
@@ -134,8 +123,6 @@ server <- function(input, output) {
        print("WARNING: Your currencies are the same.")
       }
       })
-  # if the data is current or if the data is not current
-  # how volatile is the data?
   
   # all the code to make a plot goes between the braces and is passed on to the       renderPlot() function.
   output$plot <- renderPlot({
@@ -165,7 +152,7 @@ server <- function(input, output) {
       ylab("Currency exchange rate") +
       xlab("Date") +
       ggtitle(graph_title) +
-      theme_classic()
+      theme_light()
   })
 }
 
