@@ -18,7 +18,7 @@ library(ggplot2)
 
 ```{ui shiny}
 # Create a vector that holds our currencies in the format we want to display
-x <- currencies() %>%
+currency_names <- currencies() %>%
   unite(.,                # Collapses description and code
         "currencies",     # in the built in function to create a new column
         description:code, # with the format that we want to display
@@ -39,7 +39,7 @@ ui <- function(fluidPage(
       selectInput(
         inputId = "currency1",
         label = "What is the first currency?",
-        choices = x$currencies,
+        choices = currency_names$currencies,
         selected = "Polish Zloty: PLN",  # Default currency chosen by us
         multiple = FALSE,
         selectize = TRUE,
@@ -50,7 +50,7 @@ ui <- function(fluidPage(
       selectInput(
         inputId = "currency2",
         label = "What is the second currency?",
-        choices = x$currencies,
+        choices = currency_names$currencies,
         selected = "Norwegian Krone: NOK",  # Default currency chosen by us
         multiple = FALSE,
         selectize = TRUE,
@@ -92,6 +92,7 @@ ui <- function(fluidPage(
       withSpinner(plotOutput(outputId = "plot"))
     )
   )
+)
 )
 
 ```
