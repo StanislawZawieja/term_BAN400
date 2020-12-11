@@ -1,14 +1,15 @@
 Group project BAN400: Exchange rate converter
 ---------------------------------------------
-
 # Group 99
 
-Purpose of this project:
+## Purpose of this project - Nina
 
-Method:
-1.Explain ui function:
-2.Explain server function:
+## Packages - Stan
 
-Our result:
+## Input - Stan
 
+### Graphical user interface - Nina
 
+## Output - Imran
+
+### Graph - Imran
