@@ -9,15 +9,15 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 # Uploading packages that we are going to use (add more if necessary)
-library(readxl)           #reading an excel file
-library(tidyverse)        #for ggplot2, magrittr pipes, dplyr, etc
-library(docstring)
-library(priceR)
-library(shiny) # shiny package required to build the ap
-library(shinycssloaders) # adds automatic loading animations to our Shiny plot
-library(tidyr)
+library(readxl)           # reading an excel file
+library(tidyverse)        # for ggplot2, magrittr pipes, dplyr, etc
+library(docstring)        # for documentation
+library(priceR)           # to get currency data
+library(shiny)            # shiny package required to build the ap
+library(shinycssloaders)  # adds automatic loading animations to our Shiny plot
+library(tidyr)          
 library(stringr)
-library(ggplot2)
+library(ggplot2)          # to make a plot
 
 ```
 
@@ -54,37 +54,42 @@ ui <- function() {
           inputId = "currency1",
           label = "What is the first currency?",
           choices = x$currencies,
+          selected = "Polish Zloty: PLN",
           
-                               #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
-                                #              "All currencies" = x$currencies), #grouping, but its a fail for now
+          #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
+          #              "All currencies" = x$currencies), #grouping, but its a fail for now
           multiple = FALSE,
           selectize = TRUE,
           width = NULL,
-          size = NULL), 
-                   #'               
-                   selectInput(inputId = "currency2",
-                               label = "What is the second currency?",
-                               choices = x$currencies,
-                               
-                               #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
-                               #              "All currencies" = x$currencies),
-                               
-                               multiple = FALSE,
-                               selectize = TRUE,
-                               width = NULL,
-                               size = NULL), 
-                   #'               
-                   dateRangeInput(
-                     inputId = "dates",
-                     label = "What time period do you want to look at?",
-                     start = "2000-01-01",
-                     end = NULL,
-                     min = "2000-01-01",
-                     max = Sys.Date(),
-                     format = "dd-mm-yyyy",
-                     startview = "decade",
-                     weekstart = "1"
-                   )), 
+          size = NULL
+        ),
+        #'
+        selectInput(
+          inputId = "currency2",
+          label = "What is the second currency?",
+          choices = x$currencies,
+          selected = "Norwegian Krone: NOK",
+          
+          #choices = list("Most used currencies" = grep("EUR|USD|NOK|GBP", x$currencies, value = T),
+          #              "All currencies" = x$currencies),
+          
+          multiple = FALSE,
+          selectize = TRUE,
+          width = NULL,
+          size = NULL
+        ),
+        #'
+        dateRangeInput(
+          inputId = "dates",
+          label = "What time period do you want to look at?",
+          start = "2000-01-01",
+          end = NULL,
+          min = "2000-01-01",
+          max = Sys.Date(),
+          format = "dd-mm-yyyy",
+          startview = "decade",
+          weekstart = "1"
+        )), 
       #'          
       mainPanel(
         textOutput(outputId = "text_rate"),
