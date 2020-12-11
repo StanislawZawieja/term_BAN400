@@ -32,7 +32,7 @@ x <- currencies() %>%
 
 ui <- function() {
   #' User interface of the exchange rate converter on our website
-  fluidPage(headerPanel("Silicon valley exchange rate converter"), 
+  fluidPage(headerPanel("Currency exchange rate converter"), 
     #' 
     #' @description Makes a user choose which two currencies they want to
     #' compare within a chosen time period
@@ -82,7 +82,7 @@ ui <- function() {
         dateRangeInput(
           inputId = "dates",
           label = "What time period do you want to look at?",
-          start = "2000-01-01",
+          start = "2018-01-01",
           end = NULL,
           min = "2000-01-01",
           max = Sys.Date(),
@@ -93,9 +93,9 @@ ui <- function() {
       #'          
       mainPanel(
         textOutput(outputId = "text_rate"),
-        textOutput(outputId = "text_report"),
+        tags$b(textOutput(outputId = "text_report")),
         withSpinner(plotOutput(outputId = "plot"))
-      ))
+     ))
   )
 }
 
