@@ -8,103 +8,106 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# Uploading packages that we are going to use (add more if necessary)
-library(tidyverse)        # for ggplot2, magrittr pipes, dplyr, etc
-library(priceR)           # to get currency data
-library(shiny)            # shiny package required to build the app
-library(tidyr)            # for the unite function to make a new column
-library(ggplot2)          # to make a plot
+# Load libraries 
+library(tidyverse)      
+library(priceR)          
+library(shiny)            
+library(tidyr)
+library(shinycssloaders)
+library(ggplot2)
 
 ```
 
 ```{ui shiny}
-# include input and output boxes and report on data quality
-x <- currencies() %>%
-  unite(.,
-        "currencies",
-        description:code,
+# Create a vector that holds our currencies in the format we want to display
+currency_names <- currencies() %>%
+  unite(.,                # Collapses description and code
+        "currencies",     # in the built in function to create a new column
+        description:code, # with the format that we want to display
         sep = ": ",
         remove = FALSE)
 
-ui <- function() {
-  #' User interface of the exchange rate converter on our website
-  fluidPage(headerPanel("Currency exchange rate converter"), 
-    #' 
-    #' @description Makes a user choose which two currencies they want to
-    #' compare within a chosen time period
-    #' 
-    #' @usage ui()
-    #'
-    #' @details The function creates a sidebar layout on a website with panels
-    #' of which two currencies the user wants to compare, and a time period with
-    #' consisting of a start and end date. The input is already built in for each
-    #' panel, which forces the user to insert the information in the correct
-    #' format that is needed in the process of comparison. This is done to
-    #' eliminate testing the users input information and errors that can occur.
-    #' The main part of this function is the output, which in this case is .... 
-    #' 
-    #'
-    sidebarLayout(
-      sidebarPanel(
-        selectInput(
-          inputId = "currency1",
-          label = "What is the first currency?",
-          choices = x$currencies,
-          selected = "Polish Zloty: PLN",
-          multiple = FALSE,
-          selectize = TRUE,
-          width = NULL,
-          size = NULL
-        ),
-        #'
-        selectInput(
-          inputId = "currency2",
-          label = "What is the second currency?",
-          choices = x$currencies,
-          selected = "Norwegian Krone: NOK",
-          multiple = FALSE,
-          selectize = TRUE,
-          width = NULL,
-          size = NULL
-        ),
-        #'
-        dateRangeInput(
-          inputId = "dates",
-          label = "What time period do you want to look at?",
-          start = "2018-01-01",
-          end = NULL,
-          min = "2000-01-01",
-          max = Sys.Date(),
-          format = "dd-mm-yyyy",
-          startview = "decade",
-          weekstart = "1"
-        )),
-      #'
-      mainPanel(
-        tags$h4(textOutput(outputId = "text_rate")),
-        tags$span(style = "color:red", textOutput(outputId = "text_report")),
-        tags$hr(),
-        tags$br(),
-        withSpinner(plotOutput(outputId = "plot"))
-      ))
+# User interface of the exchange rate converter on our app
+ui <- fluidPage(
+  headerPanel("Currency exchange rate converter"),
+  
+  sidebarLayout(
+    
+    # Sidebarpanels to interact with the user
+    sidebarPanel(
+      
+      # Panels that will interact and makes the user choose which two
+      # currencies they want to compare
+      selectInput(
+        inputId = "currency1",
+        label = "What is the first currency?",
+        choices = currency_names$currencies,
+        selected = "Polish Zloty: PLN",  # Default currency chosen by us
+        multiple = FALSE,
+        selectize = TRUE,
+        width = NULL,
+        size = NULL
+      ),
+      
+      selectInput(
+        inputId = "currency2",
+        label = "What is the second currency?",
+        choices = currency_names$currencies,
+        selected = "Norwegian Krone: NOK",  # Default currency chosen by us
+        multiple = FALSE,
+        selectize = TRUE,
+        width = NULL,
+        size = NULL
+      ),
+      
+      # Panel that interacts and makes the user choose which start and end
+      # year, month and date they want to compare the two currencies
+      dateRangeInput(
+        inputId = "dates",
+        label = "What time period do you want to look at?",
+        start = "2018-01-01",
+        end = NULL,
+        min = "2000-01-01",
+        max = Sys.Date(),  # Current date
+        format = "dd-mm-yyyy",
+        startview = "decade",
+        weekstart = "1"
+      )
+    ),
+    
+    # Mainpanels that displays our different outputs of the converter
+    mainPanel(
+      # Displays the comparison of the two currencies in text
+      tags$h4(textOutput(outputId = "text_rate")),
+      
+      # Warning message in text if user compares two of the same currencies
+      tags$span(style = "color:red", textOutput(outputId = "text_report")),
+      
+      # A horizontal line to divide the texts and the graph
+      tags$hr(),
+      
+      # A break line to make the output more clean
+      tags$br(),
+      
+      # A spinner to visualize and notify the user that the website is
+      # loading
+      withSpinner(plotOutput(outputId = "plot"))
+    )
   )
-}
+)
 
 ```
 
 
 ```{server shiny}
-# server instructions part of the app
 server <- function(input, output) {
   
-  # the code that generates each output goes inside the render() function
-  # render functions create outputs
-  
+  # String slicing to get the three-letter currency code
   output$text_rate <- renderText({
     currency_code1 <- sapply(strsplit(input$currency1, ': '),
-                      "[", 2)
+                             "[", 2)
     currency_code2 <- sapply(strsplit(input$currency2, ': '),
-                      "[", 2)
+                             "[", 2)
     
     fx_rate <- historical_exchange_rates(
       currency_code1,
@@ -113,25 +116,30 @@ server <- function(input, output) {
       end_date = Sys.Date()
     )
     
-    paste("Currently, 1", currency_code1, "equals", fx_rate[2], currency_code2)
+    paste("Currently, 1",
+          currency_code1,
+          "equals",
+          fx_rate[2],
+          currency_code2)
     
   })
   
+  # If-statement to display a warning message when the user compares two of
+  # the same currencies
   output$text_report <-
     renderText({
-      if(input$currency1 == input$currency2){
-       print("WARNING: Your currencies are the same.")
+      if (input$currency1 == input$currency2) {
+        print("WARNING: Your currencies are the same.")
       }
-      })
+    })
   
-  # all the code to make a plot goes between the braces and is passed on to the       renderPlot() function.
   output$plot <- renderPlot({
     currency_code1 <- sapply(strsplit(input$currency1, ': '),
-                      "[", 2)
+                             "[", 2)
     currency_code2 <- sapply(strsplit(input$currency2, ': '),
-                      "[", 2)
+                             "[", 2)
     
-    table <-
+    rates_table <-
       historical_exchange_rates(
         currency_code1,
         to = currency_code2,
@@ -144,9 +152,11 @@ server <- function(input, output) {
                          "/",
                          currency_code2)
     
-    table %>%
+    # Making a ggplot from the table with currency rates
+    # adding smoothing and a trend line
+    rates_table %>%
       mutate(date = as.Date(date)) %>%
-      ggplot(aes(x = date, y = table[, 2], group = 1)) +
+      ggplot(aes(x = date, y = rates_table[, 2], group = 1)) +
       geom_line() +
       geom_smooth(method = 'loess') +
       ylab("Currency exchange rate") +
@@ -160,7 +170,7 @@ server <- function(input, output) {
 
 
 ```{shiny App}
-# create the shiny app from the UI and the server parts
+# Create the shiny app from the UI and the server parts
 shinyApp(ui = ui, server = server)
 ```
 
